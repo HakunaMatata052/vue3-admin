@@ -23,7 +23,7 @@ const chartsRouter: Array<RouteRecordRaw> = [
         path: 'list',
         component: () =>
           import(
-            /* webpackChunkName: "BarChart" */ '@/views/user/index.vue'
+            /* webpackChunkName: "BarChart" */ '@/views/user/Index.vue'
           ),
         name: 'userlist',
         meta: {
@@ -33,7 +33,7 @@ const chartsRouter: Array<RouteRecordRaw> = [
         }
       },
       {
-        path: 'edit/:id(\\d+)',
+        path: 'edit/:id(\\d+)?',
         component: () => import(/* webpackChunkName: "example-edit" */ '@/views/user/Edit.vue'),
         name: 'editUser',
         meta: {

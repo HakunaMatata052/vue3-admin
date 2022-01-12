@@ -1,12 +1,5 @@
 <template>
   <div class="app-container">
-    <div class="op">
-      <router-link to="/user/edit/">
-        <el-button type="primary">
-          添加用户
-        </el-button>
-      </router-link>
-    </div>
     <el-table
       v-loading="listLoading"
       :data="list"
@@ -16,81 +9,68 @@
       highlight-current-row
     >
       <el-table-column
-        width="95"
+        width="80"
         align="center"
-        label="头像"
+        label="id"
+        prop="id"
+      />
+      <el-table-column
+        width="220"
+        align="center"
+        label="图片"
       >
         <template #default="{row}">
-          <el-avatar
-            shape="square"
-            :size="50"
-            :src="row.avatar"
-          />
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="用户名"
-      >
-        <template #default="{row}">
-          {{ row.username }}
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="角色"
-        width="150"
-        align="center"
-      >
-        <template
-          #default="{row}"
-        >
-          <template
-            v-for="(v,k) in row.roles"
+          <el-popover
+            placement="right"
+            width="auto"
+            trigger="click"
           >
-            <el-tag
-              v-if="v"
-              :key="k"
+            <template #reference>
+              <img
+                :src="row.imgurl"
+                style="width: 200px;height:120px;object-fit: cover;display:block;"
+              >
+            </template>
+            <img
+              :src="row.imgurl"
+              style="width: auto;max-height:90vh;display:block;"
             >
-              {{ v }}
-            </el-tag>
-          </template>
+          </el-popover>
+        </template>
+      </el-table-column>
+      <el-table-column
+        label="原始名称"
+      >
+        <template #default="{row}">
+          {{ row.originalname }}
         </template>
       </el-table-column>
       <el-table-column
         width="350"
         align="center"
-        label="openid"
-      >
-        <template #default="{row}">
-          {{ row.openid }}
-        </template>
-      </el-table-column>
-      <el-table-column
-        width="220"
-        align="center"
-        label="注册日期"
+        label="上传时间"
       >
         <template #default="{row}">
           <i class="el-icon-time" />
-          <span>{{ row.timestamp }}</span>
+          {{ row.timestamp }}
         </template>
       </el-table-column>
       <el-table-column
-        width="220"
+        width="120"
+        align="center"
+        label="附件大小"
+      >
+        <template #default="{row}">
+          <span>{{ parseInt(row.size/1024) }}Kb</span>
+        </template>
+      </el-table-column>
+      <el-table-column
+        width="120"
         align="center"
         label="操作"
         fixed="right"
       >
         <template #default="{row}">
-          <router-link :to="'/user/edit/'+row.id">
-            <el-button
-              type="primary"
-              size="small"
-              icon="el-icon-edit"
-            >
-              编辑
-            </el-button>
-          </router-link>
-
           <el-popconfirm
             title="确认删除吗?"
             @confirm="handleDelete(row.id)"
@@ -107,7 +87,6 @@
         </template>
       </el-table-column>
     </el-table>
-
     <el-pagination
       class="pagination"
       @current-change="fetchData"
@@ -119,13 +98,13 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, reactive, toRefs } from 'vue'
-import { UserInfoModel } from '@/model/userModel'
-import { getUsersList, delUsers } from '@/apis/user'
+import { AttachmentModel } from '@/model/attachmentModel'
+import { getAttachmentList, delAttachment } from '@/apis/attachment'
 import { ElMessage } from 'element-plus'
 export default defineComponent({
   setup() {
     const dataMap = reactive({
-      list: Array<UserInfoModel>(),
+      list: Array<AttachmentModel>(),
       total: 0,
       page: 1,
       pageSize: 5,
@@ -135,7 +114,7 @@ export default defineComponent({
     const fetchData = async(page: number) => {
       dataMap.listLoading = true
       dataMap.page = page
-      const res = await getUsersList({ page, pageSize: dataMap.pageSize })
+      const res = await getAttachmentList({ page, pageSize: dataMap.pageSize })
       if (res?.code === 200) {
         dataMap.list = res?.data.list ?? []
         dataMap.total = res?.data.total || 0
@@ -148,10 +127,12 @@ export default defineComponent({
       }, 0.5 * 1000)
     }
     const handleDelete = async(id: number) => {
-      const res = await delUsers({ id })
+      const res = await delAttachment({ id })
       if (res?.code === 200) {
         fetchData(dataMap.page)
         ElMessage.success(res?.msg)
+      } else {
+        ElMessage.error(res?.msg)
       }
     }
     onMounted(() => {
@@ -167,10 +148,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.op{
-  margin-bottom: 20px;
-}
-
 .pagination{
   width: 100%;
   text-align: center;

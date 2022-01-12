@@ -158,8 +158,8 @@ export default defineComponent({
     const { t } = useI18n()
     const state = reactive({
       loginForm: {
-        username: 'admin',
-        password: '123456'
+        username: '',
+        password: ''
       },
       loginRules: {
         username: [{ validator: userNameRef, trigger: 'blur' }],

@@ -19,6 +19,9 @@ module.exports = {
     ecmaVersion: 2020
   },
   rules: {
+    "vue/multi-word-component-names": ['off', {
+      "ignores": []
+    }],
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     '@typescript-eslint/ban-types': 'off',
@@ -41,7 +44,7 @@ module.exports = {
     'vue/camelcase': 'error',
     'vue/comma-dangle': 'error',
     'vue/component-name-in-template-casing': 'error',
-    'vue/eqeqeq': 'error',
+    'vue/eqeqeq': 'off',
     'vue/key-spacing': 'error',
     'vue/match-component-file-name': 'error',
     'vue/object-curly-spacing': 'error',

@@ -20,11 +20,15 @@
           type="password"
         />
       </el-form-item>
+      <el-form-item
+        label="openid"
+        v-if="form.openid"
+      >
+        {{ form.openid }}
+      </el-form-item>
       <el-form-item label="是否是管理员">
         <el-switch
           v-model="form.ismanage"
-          :active-value="1"
-          :inactive-value="0"
         />
       </el-form-item>
       <el-form-item>
@@ -40,13 +44,8 @@
 </template>
 
 <script lang="ts">
-import {
-  reactive,
-  toRefs,
-  defineComponent,
-  onMounted
-} from 'vue'
-import { getUsers, putUsers } from '@/apis/user'
+import { reactive, toRefs, defineComponent, onMounted } from 'vue'
+import { getUser, putUsers } from '@/apis/user'
 import { ElMessage } from 'element-plus'
 import { useRoute, useRouter } from 'vue-router'
 
@@ -58,18 +57,19 @@ export default defineComponent({
     }
   },
 
-  setup() {
+  setup(prop) {
     const router = useRouter()
     const route = useRoute()
     const dataMap = reactive({
       form: {
         username: '',
         password: '',
-        password2: ''
+        password2: '',
+        ismanage: false
       }
     })
     const fetchData = async(id: any) => {
-      const res = await getUsers({ id })
+      const res = await getUser({ id })
       console.log(res, '-------------------')
       if (res?.code === 200) {
         dataMap.form = { ...dataMap.form, ...res.data }
@@ -82,20 +82,34 @@ export default defineComponent({
         ElMessage.error('请填写用户名！')
         return
       }
-      if ((dataMap.form.password.length || dataMap.form.password2.length) && dataMap.form.password.length !== dataMap.form.password2.length) {
+      if (
+        (dataMap.form.password.length || dataMap.form.password2.length) &&
+        dataMap.form.password.length !== dataMap.form.password2.length
+      ) {
         ElMessage.error('两次密码不一致！')
         return
       }
       const res = await putUsers({ ...dataMap.form })
       if (res?.code === 200) {
         ElMessage.success(res.msg)
-        router.go(-1)
+        if (prop.isEdit) {
+          router.go(-1)
+        } else {
+          dataMap.form = {
+            username: '',
+            password: '',
+            password2: '',
+            ismanage: false
+          }
+        }
       } else {
         ElMessage.error(res?.msg)
       }
     }
     onMounted(() => {
-      fetchData(route.params.id)
+      if (prop.isEdit) {
+        fetchData(route.params.id)
+      }
     })
     return {
       ...toRefs(dataMap),
@@ -106,7 +120,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.userEdit-container{
-    padding: 30px 0;
+.userEdit-container {
+  padding: 30px 0;
 }
 </style>

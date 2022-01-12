@@ -72,7 +72,10 @@ export default {
     externalLink: '外链',
     profile: '个人中心',
     user: '用户管理',
-    userlist: '用户列表'
+    userlist: '用户列表',
+    editUser: '编辑用户',
+    attachment: '附件管理',
+    attachmentlist: '附件列表'
   },
   navbar: {
     logOut: '退出登录',

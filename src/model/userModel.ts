@@ -37,6 +37,7 @@ export interface UserInfoModel {
   openid: string
 }
 
-export interface UsersList {
-  list: any
+export interface UsersList<T> {
+  list: T
+  total: number
 }
