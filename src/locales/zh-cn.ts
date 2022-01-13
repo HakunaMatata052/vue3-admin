@@ -75,7 +75,8 @@ export default {
     userlist: '用户列表',
     editUser: '编辑用户',
     attachment: '附件管理',
-    attachmentlist: '附件列表'
+    attachmentlist: '附件列表',
+    system: '系统配置'
   },
   navbar: {
     logOut: '退出登录',
